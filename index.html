@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundry Woosh</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Auth Pages */
+        .auth-box {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 450px;
+            margin: 50px auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .auth-box h1 {
+            text-align: center;
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .auth-box h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .auth-box input,
+        .auth-box textarea,
+        .auth-box select {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .auth-box input:focus,
+        .auth-box textarea:focus,
+        .auth-box select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .auth-box button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .auth-box button:hover {
+            transform: translateY(-2px);
+        }
+
+        .auth-box p {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .auth-box a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            color: #667eea;
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-badge {
+            background: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .admin-badge {
+            background: #764ba2;
+            color: white;
+        }
+
+        #logoutBtn {
+            padding: 10px 25px;
+            background: #764ba2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 40px 0;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-icon {
+            font-size: 4em;
+            margin-bottom: 15px;
+        }
+
+        .menu-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.5em;
+        }
+
+        .menu-card p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Order Detail */
+        .order-detail {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            display: none;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-detail.active {
+            display: block;
+        }
+
+        .order-detail h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        #serviceDescription {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        #serviceDescription ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .order-detail label {
+            display: block;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 8px;
+            margin-top: 15px;
+        }
+
+        .order-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .order-buttons button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .order-buttons button[type="button"] {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .order-buttons button[type="submit"] {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .order-buttons button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Order List */
+        .order-list {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-list h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+        }
+
+        .order-item h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .order-code {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .order-info {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .order-info strong {
+            color: #333;
+        }
+
+        /* Admin Dashboard */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-weight: bold;
+        }
+
+        .admin-filters {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .admin-filters input,
+        .admin-filters select {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .admin-filters button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-process {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-done {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .status-delivered {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .admin-order-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-order-actions select {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .admin-order-actions button {
+            padding: 8px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .order-buttons {
+                flex-direction: column;
+            }
+
+            .admin-filters {
+                flex-direction: column;
+            }
+
+            .admin-filters input,
+            .admin-filters select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Halaman Login -->
+    <div id="loginPage" class="page active">
+        <div class="container">
+            <div class="auth-box">
+                <h1>🧺 Laundry Woosh</h1>
+                <h2>Masuk</h2>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="switchLoginTab('customer')">Pelanggan</button>
+                    <button class="auth-tab" onclick="switchLoginTab('admin')">Admin</button>
+                </div>
+
+                <form id="loginForm">
+                    <input type="text" id="loginIdentifier" placeholder="Email atau No. Telepon" required>
+                    
+                    <div style="position: relative; margin-bottom: 15px;">
+                        <input type="password" id="loginPassword" placeholder="Password" required style="width: 100%; padding: 15px; padding-right: 50px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px;">
+                        <span onclick="togglePassword('loginPassword', 'loginEye')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; user-select: none;">
+                            <span id="loginEye">👁️</span>
+                        </span>
+                    </div>
+                    <button type="submit">Masuk</button>
+                </form>
+                <p id="registerLink">Belum punya akun? <a href="#" id="showRegister">Daftar</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Halaman Register -->
+    <div id="registerPage" class="page">
+        <div class="container">
+            <div class="auth-box">
+                <h1>🧺 Laundry Woosh</h1>
+                <h2>Daftar</h2>
+                
+                <form id="registerForm">
+                    <input type="text" id="regName" placeholder="Nama Lengkap" required>
+                    <input type="text" id="regIdentifier" placeholder="Email atau No. Telepon" required>
+                    <input type="text" id="regAddress" placeholder="Alamat" required>
+                    <div style="position: relative; margin-bottom: 15px;">
+                        <input type="password" id="regPassword" placeholder="Password" required style="width: 100%; padding: 15px; padding-right: 50px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 16px;">
+                        <span onclick="togglePassword('regPassword', 'regEye')" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; user-select: none;">
+                            <span id="regEye">👁️</span>
+                        </span>
+                    </div>
+                    <button type="submit">Daftar</button>
+                </form>
+                <p>Sudah punya akun? <a href="#" id="showLogin">Masuk</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Halaman Utama Customer -->
+    <div id="mainPage" class="page">
+        <header>
+            <h1>🧺 Laundry Woosh</h1>
+            <div class="header-info">
+                <span class="user-badge" id="userBadge"></span>
+                <button id="logoutBtn">Keluar</button>
+            </div>
+        </header>
+        
+        <div class="container">
+            <h2 style="color: white; margin-top: 20px;">Pilih Layanan Kami</h2>
+            <div class="menu-grid">
+                <div class="menu-card" data-service="kiloan">
+                    <div class="menu-icon">⚖️</div>
+                    <h3>Laundry Kiloan</h3>
+                    <p>Layanan laundry dengan harga per kilogram</p>
+                </div>
+                
+                <div class="menu-card" data-service="khusus">
+                    <div class="menu-icon">👔</div>
+                    <h3>Laundry Khusus</h3>
+                    <p>Untuk pakaian dengan perawatan khusus</p>
+                </div>
+                
+                <div class="menu-card" data-service="setrika">
+                    <div class="menu-icon">🔥</div>
+                    <h3>Cuci & Setrika</h3>
+                    <p>Pakaian dicuci dan disetrika rapi</p>
+                </div>
+            </div>
+
+            <!-- Detail Pesanan -->
+            <div id="orderDetail" class="order-detail">
+                <h2 id="serviceTitle"></h2>
+                <div id="serviceDescription"></div>
+                
+                <form id="orderForm">
+                    <div id="serviceOptions" style="display: none;">
+                        <label>Pilih Jenis Layanan:</label>
+                        <select id="serviceOption" required>
+                            <option value="">Pilih Layanan</option>
+                        </select>
+                    </div>
+                    
+                    <label>Berat / Jumlah:</label>
+                    <input type="number" id="quantity" min="1" required>
+                    
+                    <label>Catatan Tambahan:</label>
+                    <textarea id="notes" rows="3"></textarea>
+                    
+                    <label>Metode Pembayaran:</label>
+                    <select id="paymentMethod" required>
+                        <option value="">Pilih Metode</option>
+                        <option value="cod">COD (Cash on Delivery)</option>
+                        <option value="transfer">Transfer Bank</option>
+                    </select>
+                    
+                    <div class="order-buttons">
+                        <button type="button" id="cancelOrder">Batal</button>
+                        <button type="submit">Pesan Sekarang</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Daftar Pesanan -->
+            <div id="orderList" class="order-list">
+                <h2>Pesanan Saya</h2>
+                <div id="orders"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Halaman Admin -->
+    <div id="adminPage" class="page">
+        <header>
+            <h1>🧺 Laundry Woosh - Admin Panel</h1>
+            <div class="header-info">
+                <span class="user-badge admin-badge">👨‍💼 Admin</span>
+                <button id="logoutBtnAdmin">Keluar</button>
+            </div>
+        </header>
+        
+        <div class="container">
+            <!-- Statistik -->
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <h3 id="totalOrders">0</h3>
+                    <p>Total Pesanan</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="pendingOrders">0</h3>
+                    <p>Menunggu</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalRevenue">Rp 0</h3>
+                    <p>Total Pendapatan</p>
+                </div>
+            </div>
+
+            <!-- Filter -->
+            <div class="admin-filters">
+                <input type="text" id="searchCode" placeholder="🔍 Cari kode pesanan...">
+                <select id="filterStatus">
+                    <option value="">Semua Status</option>
+                    <option value="Menunggu Konfirmasi">Menunggu Konfirmasi</option>
+                    <option value="Diproses">Diproses</option>
+                    <option value="Selesai">Selesai</option>
+                    <option value="Dikirim">Dikirim</option>
+                </select>
+                <button onclick="filterOrders()">Filter</button>
+                <button onclick="resetFilter()">Reset</button>
+            </div>
+
+            <!-- Daftar Semua Pesanan -->
+            <div class="order-list">
+                <h2>Semua Pesanan</h2>
+                <div id="adminOrders"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data layanan
+        const services = {
+            kiloan: {
+                title: "Laundry Kiloan",
+                description: `
+                    <h3>📋 Detail Layanan:</h3>
+                    <ul>
+                        <li>💰 Harga: Rp 10.000/kg (Sudah termasuk setrika)</li>
+                        <li>⏱️ Estimasi: 2-3 hari</li>
+                        <li>🧼 Proses: Cuci bersih dengan deterjen berkualitas</li>
+                        <li>🔥 Setrika: Disetrika rapi dan dilipat</li>
+                        <li>☀️ Pengeringan: Dijemur atau menggunakan mesin pengering</li>
+                        <li>🚚 Gratis antar-jemput minimal 2kg (khusus area Montong)</li>
+                        <li style="color: #e74c3c; font-weight: bold;">🎉 PROMO: Gratis antar-jemput tanpa batasan kg sampai 25 April 2026!</li>
+                    </ul>
+                `,
+                unit: "kg",
+                price: 10000
+            },
+            khusus: {
+                title: "Laundry Khusus",
+                description: `
+                    <h3>📋 Detail Layanan:</h3>
+                    <ul>
+                        <li>💰 Harga: Rp 10.000/kg</li>
+                        <li>⏱️ Estimasi: 3-5 hari</li>
+                        <li>👔 Cocok untuk: Jas, kebaya, gaun, jaket kulit, sepatu</li>
+                        <li>✨ Perawatan khusus dengan bahan kimia ramah pakaian</li>
+                        <li>🎨 Menjaga warna dan tekstur kain</li>
+                        <li>🧴 Menggunakan pewangi premium</li>
+                        <li>🚚 Gratis antar-jemput minimal 2kg (khusus area Montong)</li>
+                        <li style="color: #e74c3c; font-weight: bold;">🎉 PROMO: Gratis antar-jemput tanpa batasan kg sampai 25 April 2026!</li>
+                    </ul>
+                `,
+                unit: "kg",
+                price: 10000
+            },
+            setrika: {
+                title: "Cuci & Setrika",
+                description: `
+                    <h3>📋 Detail Layanan:</h3>
+                    <ul>
+                        <li>💰 Harga: Tergantung pilihan layanan</li>
+                        <li>⏱️ Estimasi: 2-3 hari</li>
+                        <li>🧼 Cuci Saja: Rp 5.000/kg</li>
+                        <li>🔥 Setrika Saja: Rp 5.000/kg</li>
+                        <li>✨ Cuci + Setrika: Rp 10.000/kg</li>
+                        <li>👕 Pakaian dilipat dan dikemas rapi</li>
+                        <li>🚚 Gratis antar-jemput minimal 2kg (khusus area Montong)</li>
+                        <li style="color: #e74c3c; font-weight: bold;">🎉 PROMO: Gratis antar-jemput tanpa batasan kg sampai 25 April 2026!</li>
+                    </ul>
+                `,
+                unit: "kg",
+                hasOptions: true,
+                options: {
+                    cuci: { name: "Cuci Saja", price: 5000 },
+                    setrika_only: { name: "Setrika Saja", price: 5000 },
+                    cuci_setrika: { name: "Cuci + Setrika", price: 10000 }
+                }
+            }
+        };
+
+        // Admin credentials
+        const ADMIN_EMAIL = "admin@laundrywoosh.com";
+        const ADMIN_PASSWORD = "admin123";
+        const WHATSAPP_NUMBER = "6287785421267";
+
+        // State management
+        let currentUser = null;
+        let isAdmin = false;
+        let orders = [];
+        let loginMode = 'customer';
+
+        // Toggle password visibility
+        function togglePassword(inputId, eyeId) {
+            const input = document.getElementById(inputId);
+            const eye = document.getElementById(eyeId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                eye.textContent = '🙈';
+            } else {
+                input.type = 'password';
+                eye.textContent = '👁️';
+            }
+        }
+
+        // Switch login tab
+        function switchLoginTab(mode) {
+            loginMode = mode;
+            const tabs = document.querySelectorAll('.auth-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const registerLink = document.getElementById('registerLink');
+            
+            if (mode === 'admin') {
+                registerLink.style.display = 'none';
+            } else {
+                registerLink.style.display = 'block';
+            }
+        }
+
+        // Generate kode unik
+        function generateOrderCode() {
+            const prefix = "WH";
+            const timestamp = Date.now().toString(36).toUpperCase();
+            const random = Math.random().toString(36).substring(2, 5).toUpperCase();
+            return `${prefix}-${timestamp}-${random}`;
+        }
+
+        // Show/Hide pages
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // Send WhatsApp notification
+        function sendWhatsAppNotification(order) {
+            const message = `🧺 *PESANAN BARU - Laundry Woosh*
+
+📋 Kode: ${order.code}
+👤 Nama: ${order.customerName}
+📱 Telepon: ${order.customerPhone}
+📍 Alamat: ${order.customerAddress}
+
+🛍️ Layanan: ${order.service}
+📦 Jumlah: ${order.quantity} ${order.unit}
+💰 Total: Rp ${order.total.toLocaleString('id-ID')}
+💳 Pembayaran: ${order.paymentMethod}
+📝 Catatan: ${order.notes || '-'}
+
+⏰ Waktu Pesan: ${order.date}`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const identifier = document.getElementById('loginIdentifier').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            // Check admin login
+            if (loginMode === 'admin') {
+                if (identifier === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+                    isAdmin = true;
+                    currentUser = { email: ADMIN_EMAIL, name: 'Admin' };
+                    localStorage.setItem('isAdmin', 'true');
+                    loadAllOrders();
+                    showPage('adminPage');
+                    updateAdminStats();
+                } else {
+                    alert('Email atau password admin salah!');
+                }
+                return;
+            }
+
+            // Customer login - cek email atau phone
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => 
+                (u.email === identifier || u.phone === identifier) && u.password === password
+            );
+            
+            if (user) {
+                currentUser = user;
+                isAdmin = false;
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                localStorage.removeItem('isAdmin');
+                loadOrders();
+                document.getElementById('userBadge').textContent = user.name;
+                showPage('mainPage');
+            } else {
+                alert('Email/No. Telepon atau password salah!');
+            }
+        });
+
+        // Register
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('regName').value.trim();
+            const identifier = document.getElementById('regIdentifier').value.trim();
+            const address = document.getElementById('regAddress').value.trim();
+            const password = document.getElementById('regPassword').value;
+            
+            // Deteksi apakah identifier adalah email atau phone
+            const isEmail = identifier.includes('@');
+            
+            const newUser = {
+                name: name,
+                email: isEmail ? identifier : '',
+                phone: isEmail ? '' : identifier,
+                address: address,
+                password: password
+            };
+            
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            
+            // Cek apakah identifier sudah terdaftar
+            const exists = users.find(u => u.email === identifier || u.phone === identifier);
+            
+            if (exists) {
+                alert('Email atau nomor telepon sudah terdaftar!');
+                return;
+            }
+            
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            alert('Pendaftaran berhasil! Silakan login.');
+            showPage('loginPage');
+            document.getElementById('registerForm').reset();
+        });
+
+        // Toggle between login and register
+        document.getElementById('showRegister').addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('registerPage');
+        });
+
+        document.getElementById('showLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('loginPage');
+        });
+
+        // Logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            currentUser = null;
+            isAdmin = false;
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isAdmin');
+            showPage('loginPage');
+        });
+
+        document.getElementById('logoutBtnAdmin').addEventListener('click', () => {
+            currentUser = null;
+            isAdmin = false;
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('isAdmin');
+            showPage('loginPage');
+        });
+
+        // Menu card click
+        document.querySelectorAll('.menu-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const serviceType = card.dataset.service;
+                const service = services[serviceType];
+                
+                document.getElementById('serviceTitle').textContent = service.title;
+                document.getElementById('serviceDescription').innerHTML = service.description;
+                document.getElementById('orderDetail').classList.add('active');
+                document.getElementById('orderDetail').dataset.service = serviceType;
+                
+                const serviceOptionsDiv = document.getElementById('serviceOptions');
+                const serviceOptionSelect = document.getElementById('serviceOption');
+                
+                if (service.hasOptions) {
+                    serviceOptionsDiv.style.display = 'block';
+                    serviceOptionSelect.innerHTML = '<option value="">Pilih Layanan</option>';
+                    
+                    Object.keys(service.options).forEach(key => {
+                        const option = service.options[key];
+                        serviceOptionSelect.innerHTML += `<option value="${key}">${option.name} - Rp ${option.price.toLocaleString('id-ID')}/kg</option>`;
+                    });
+                    serviceOptionSelect.required = true;
+                } else {
+                    serviceOptionsDiv.style.display = 'none';
+                    serviceOptionSelect.required = false;
+                }
+                
+                document.getElementById('orderDetail').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Cancel order
+        document.getElementById('cancelOrder').addEventListener('click', () => {
+            document.getElementById('orderDetail').classList.remove('active');
+            document.getElementById('orderForm').reset();
+        });
+
+        // Submit order
+        document.getElementById('orderForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const serviceType = document.getElementById('orderDetail').dataset.service;
+            const service = services[serviceType];
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const notes = document.getElementById('notes').value;
+            const paymentMethod = document.getElementById('paymentMethod').value;
+            
+            if (!paymentMethod) {
+                alert('Pilih metode pembayaran terlebih dahulu!');
+                return;
+            }
+            
+            let price, serviceDetail;
+            
+            if (service.hasOptions) {
+                const selectedOption = document.getElementById('serviceOption').value;
+                if (!selectedOption) {
+                    alert('Pilih jenis layanan terlebih dahulu!');
+                    return;
+                }
+                const option = service.options[selectedOption];
+                price = option.price;
+                serviceDetail = `${service.title} - ${option.name}`;
+            } else {
+                price = service.price;
+                serviceDetail = service.title;
+            }
+            
+            const order = {
+                code: generateOrderCode(),
+                service: serviceDetail,
+                quantity: quantity,
+                unit: service.unit,
+                price: price,
+                total: quantity * price,
+                paymentMethod: paymentMethod === 'cod' ? 'COD' : 'Transfer Bank',
+                notes: notes,
+                date: new Date().toLocaleString('id-ID'),
+                user: currentUser.email,
+                customerName: currentUser.name,
+                customerPhone: currentUser.phone,
+                customerAddress: currentUser.address,
+                status: 'Menunggu Konfirmasi'
+            };
+            
+            // Save to global orders
+            const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            allOrders.push(order);
+            localStorage.setItem('orders', JSON.stringify(allOrders));
+            
+            // Update local orders
+            orders.push(order);
+            displayOrders();
+            
+            // Send WhatsApp notification
+            sendWhatsAppNotification(order);
+            
+            alert(`Pesanan berhasil!\nKode Pesanan: ${order.code}\nTotal: Rp ${order.total.toLocaleString('id-ID')}\n\nNotifikasi telah dikirim ke admin via WhatsApp!`);
+            
+            document.getElementById('orderDetail').classList.remove('active');
+            document.getElementById('orderForm').reset();
+            
+            document.getElementById('orderList').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Save and notify order
+        function saveAndNotifyOrder(order) {
+            // Save to global orders
+            const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            allOrders.push(order);
+            localStorage.setItem('orders', JSON.stringify(allOrders));
+            
+            // Update local orders
+            orders.push(order);
+            displayOrders();
+            
+            // Send WhatsApp notification
+            sendWhatsAppNotification(order);
+            
+            let message = `Pesanan berhasil!\nKode Pesanan: ${order.code}\nTotal: Rp ${order.total.toLocaleString('id-ID')}\n\nNotifikasi telah dikirim ke admin via WhatsApp!`;
+            
+            if (order.paymentMethod === 'Transfer Bank') {
+                message += `\n\nSilakan transfer ke salah satu rekening yang tersedia.\nAtas Nama: Laundry Woosh`;
+            }
+            
+            alert(message);
+            
+            document.getElementById('orderDetail').classList.remove('active');
+            document.getElementById('orderForm').reset();
+            
+            document.getElementById('orderList').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Close payment modal
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('active');
+            pendingOrder = null;
+        }
+
+        // Confirm payment
+        function confirmPayment() {
+            if (pendingOrder) {
+                saveAndNotifyOrder(pendingOrder);
+                closePaymentModal();
+            }
+        }
+
+        // Copy total payment
+        function copyTotal() {
+            const total = pendingOrder ? pendingOrder.total.toString() : '0';
+            navigator.clipboard.writeText(total).then(() => {
+                alert('Nominal pembayaran berhasil dicopy!');
+            });
+        }
+
+        // Save orders
+        function saveOrders() {
+            localStorage.setItem('orders', JSON.stringify(JSON.parse(localStorage.getItem('orders') || '[]')));
+        }
+
+        // Load orders
+        function loadOrders() {
+            const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders = allOrders.filter(o => o.user === currentUser.email);
+            displayOrders();
+        }
+
+        // Load all orders for admin
+        function loadAllOrders() {
+            orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            displayAdminOrders();
+        }
+
+        // Display orders
+        function displayOrders() {
+            // Reload dari localStorage untuk mendapat update terbaru
+            const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            orders = allOrders.filter(o => o.user === currentUser.email);
+            
+            const ordersContainer = document.getElementById('orders');
+            
+            if (orders.length === 0) {
+                ordersContainer.innerHTML = '<p style="color: #666;">Belum ada pesanan</p>';
+                return;
+            }
+            
+            ordersContainer.innerHTML = orders.map(order => {
+                let statusClass = 'status-pending';
+                if (order.status === 'Diproses') statusClass = 'status-process';
+                if (order.status === 'Selesai') statusClass = 'status-done';
+                if (order.status === 'Dikirim') statusClass = 'status-delivered';
+                
+                return `
+                <div class="order-item">
+                    <span class="order-code">${order.code}</span>
+                    <h3>${order.service}</h3>
+                    <div class="order-info">
+                        <strong>Jumlah:</strong> ${order.quantity} ${order.unit}<br>
+                        <strong>Total:</strong> Rp ${order.total.toLocaleString('id-ID')}<br>
+                        <strong>Pembayaran:</strong> ${order.paymentMethod}<br>
+                        <strong>Tanggal:</strong> ${order.date}<br>
+                        <strong>Status:</strong> <span class="status-badge ${statusClass}">${order.status}</span><br>
+                        ${order.notes ? `<strong>Catatan:</strong> ${order.notes}<br>` : ''}
+                    </div>
+                </div>
+                `;
+            }).reverse().join('');
+        }
+
+        // Display admin orders
+        function displayAdminOrders(filteredOrders = null) {
+            const ordersToDisplay = filteredOrders || orders;
+            const ordersContainer = document.getElementById('adminOrders');
+            
+            if (ordersToDisplay.length === 0) {
+                ordersContainer.innerHTML = '<p style="color: #666;">Belum ada pesanan</p>';
+                return;
+            }
+            
+            ordersContainer.innerHTML = ordersToDisplay.map(order => {
+                let statusClass = 'status-pending';
+                if (order.status === 'Diproses') statusClass = 'status-process';
+                if (order.status === 'Selesai') statusClass = 'status-done';
+                if (order.status === 'Dikirim') statusClass = 'status-delivered';
+                
+                return `
+                <div class="order-item">
+                    <span class="order-code">${order.code}</span>
+                    <h3>${order.service}</h3>
+                    <div class="order-info">
+                        <strong>Pelanggan:</strong> ${order.customerName}<br>
+                        <strong>Telepon:</strong> ${order.customerPhone}<br>
+                        <strong>Alamat:</strong> ${order.customerAddress}<br>
+                        <strong>Jumlah:</strong> ${order.quantity} ${order.unit}<br>
+                        <strong>Total:</strong> Rp ${order.total.toLocaleString('id-ID')}<br>
+                        <strong>Pembayaran:</strong> ${order.paymentMethod}<br>
+                        <strong>Tanggal:</strong> ${order.date}<br>
+                        <strong>Status:</strong> <span class="status-badge ${statusClass}">${order.status}</span><br>
+                        ${order.notes ? `<strong>Catatan:</strong> ${order.notes}<br>` : ''}
+                    </div>
+                    <div class="admin-order-actions">
+                        <select id="status-${order.code}">
+                            <option value="Menunggu Konfirmasi" ${order.status === 'Menunggu Konfirmasi' ? 'selected' : ''}>Menunggu Konfirmasi</option>
+                            <option value="Diproses" ${order.status === 'Diproses' ? 'selected' : ''}>Diproses</option>
+                            <option value="Selesai" ${order.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                            <option value="Dikirim" ${order.status === 'Dikirim' ? 'selected' : ''}>Dikirim</option>
+                        </select>
+                        <button onclick="updateOrderStatus('${order.code}')">Update Status</button>
+                    </div>
+                </div>
+                `;
+            }).reverse().join('');
+        }
+
+        // Update order status
+        function updateOrderStatus(orderCode) {
+            const newStatus = document.getElementById(`status-${orderCode}`).value;
+            const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const orderIndex = allOrders.findIndex(o => o.code === orderCode);
+            
+            if (orderIndex !== -1) {
+                allOrders[orderIndex].status = newStatus;
+                localStorage.setItem('orders', JSON.stringify(allOrders));
+                loadAllOrders();
+                updateAdminStats();
+                alert(`Status pesanan ${orderCode} berhasil diupdate menjadi: ${newStatus}`);
+            }
+        }
+
+        // Update admin stats
+        function updateAdminStats() {
+            const allOrders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const totalOrders = allOrders.length;
+            const pendingOrders = allOrders.filter(o => o.status === 'Menunggu Konfirmasi').length;
+            const totalRevenue = allOrders.reduce((sum, order) => sum + order.total, 0);
+            
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('pendingOrders').textContent = pendingOrders;
+            document.getElementById('totalRevenue').textContent = `Rp ${totalRevenue.toLocaleString('id-ID')}`;
+        }
+
+        // Filter orders
+        function filterOrders() {
+            const searchCode = document.getElementById('searchCode').value.toLowerCase();
+            const filterStatus = document.getElementById('filterStatus').value;
+            
+            let filtered = JSON.parse(localStorage.getItem('orders') || '[]');
+            
+            if (searchCode) {
+                filtered = filtered.filter(o => o.code.toLowerCase().includes(searchCode));
+            }
+            
+            if (filterStatus) {
+                filtered = filtered.filter(o => o.status === filterStatus);
+            }
+            
+            displayAdminOrders(filtered);
+        }
+
+        // Reset filter
+        function resetFilter() {
+            document.getElementById('searchCode').value = '';
+            document.getElementById('filterStatus').value = '';
+            loadAllOrders();
+        }
+
+        // Check login on load
+        window.addEventListener('load', () => {
+            const savedUser = localStorage.getItem('currentUser');
+            const savedAdmin = localStorage.getItem('isAdmin');
+            
+            if (savedAdmin === 'true') {
+                isAdmin = true;
+                currentUser = { email: ADMIN_EMAIL, name: 'Admin' };
+                loadAllOrders();
+                showPage('adminPage');
+                updateAdminStats();
+            } else if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                isAdmin = false;
+                loadOrders();
+                document.getElementById('userBadge').textContent = currentUser.name;
+                showPage('mainPage');
+            } else {
+                showPage('loginPage');
+            }
+        });
+    </script>
+</body>
+</html>
